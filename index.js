@@ -32,12 +32,12 @@ let currentCompany = "",
 connect();
 
 app.get("/", (req, res) => {
-  res.render("index.ejs");
+  res.send("Hello");
 });
 
 //sign up
 app.get("/signup", (req, res) => {
-  res.render("signup.ejs");
+  res.send("Hello signup page");
 });
 
 app.post("/signup", async (req, res) => {
@@ -65,7 +65,7 @@ app.post("/signup", async (req, res) => {
 
 //login
 app.get("/login", (req, res) => {
-  res.render("login.ejs");
+  res.send("Hello login page");
 });
 
 app.post("/login", async (req, res) => {
@@ -87,7 +87,7 @@ app.post("/login", async (req, res) => {
 
 //company dashboard
 app.get("/dashboard", (req, res) => {
-  res.render("dashboard.ejs", { qrCodeImg: qrCodeImg });
+  res.send("Hello dashboard page");
 });
 
 app.post("/dashboard", async (req, res) => {
