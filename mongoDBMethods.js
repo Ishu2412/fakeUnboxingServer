@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { CompanyAuthMongo, CompanyDataMongo } from "./mongoDB.js";
+import { CompanyAuthMongo, CompanyDataMongo, HederaData } from "./mongoDB.js";
 
 const uri =
   "mongodb+srv://ishu:lNwKH7FlCS8wwZBx@cluster0.bbugwp2.mongodb.net/?retryWrites=true&w=majority";
@@ -83,6 +83,32 @@ async function addCompanyProduct(companyName, product) {
   }
 }
 
+// Hedera Data
+
+//Read hedera Data
+async function readHederaData() {
+  try {
+    const hedData = await HederaData.find({});
+    console.log("Hedera data retrieved:", hedData);
+    return hedData;
+  } catch (error) {
+    console.error("Error retrieving users", error);
+  }
+}
+
+// Add hedera Data
+async function addHederaData(data) {
+  try {
+    const hashData = new HederaData(data);
+    const result = await hashData.save();
+    console.log(
+      `New Hash is created with _id: ${result._id}, name: ${result.hash}`
+    );
+  } catch (error) {
+    console.error("Error creating new hash", error);
+  }
+}
+
 export {
   connect,
   closeConnection,
@@ -91,6 +117,8 @@ export {
   readCompanyData,
   addCompanyProduct,
   readCompanyAuth,
+  readHederaData,
+  addHederaData,
 };
 
 // Connect to MongoDB

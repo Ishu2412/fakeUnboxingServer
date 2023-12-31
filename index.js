@@ -10,6 +10,8 @@ import {
   readCompanyData,
   addCompanyProduct,
   readCompanyAuth,
+  readHederaData,
+  addHederaData,
 } from "./mongoDBMethods.js";
 import bodyParser from "body-parser";
 import { dirname } from "path";
@@ -111,7 +113,7 @@ app.post("/dashboard", async (req, res) => {
 
     const smartData = {
       unqId: unqId,
-      hashcode: hashCode,
+      hash: hashCode,
     };
 
     // storeDataSmart(smartData);
@@ -120,6 +122,7 @@ app.post("/dashboard", async (req, res) => {
     // console.log(arrCompany);
     // const arrSmart = retrieveDataSmart();
     // console.log(arrSmart);
+    addHederaData(smartData);
     qrCodeImg = qrCodeGenerate(hashCode);
     res.status(200).send(qrCodeImg);
   } catch (error) {
@@ -132,15 +135,23 @@ app.post("/dashboard", async (req, res) => {
 app.post("/check", async (req, res) => {
   try {
     const dataMongo = await readCompanyData();
-    const dataSmart = "";
-    const arrMongo = data.arr;
-    const arrSmart = "";
-    const smartHash = "";
-    const smartId = "";
-    const obj = arrMongo.find((obj) => obj.unqId === smartId);
-    req.body.serailNumber === obj.serialNumber
-      ? res.status(200).send("true")
-      : res.status(200).send("false");
+    const dataSmart = await readHederaData();
+
+    // Find the entry in dataSmart with the matching hash
+    const smartEntry = dataSmart.find((entry) => entry.hash === req.body.hash);
+
+    if (smartEntry) {
+      // Find the entry in dataMongo with the matching unqId
+      const obj = dataMongo.find((obj) => obj.unqId === smartEntry.unqId);
+
+      if (obj && obj.serialNumber === req.body.serialNumber) {
+        res.status(200).send("true");
+      } else {
+        res.status(200).send("false");
+      }
+    } else {
+      res.status(200).send("false");
+    }
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Internal Server Error");
